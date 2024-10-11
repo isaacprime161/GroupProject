@@ -99,9 +99,30 @@ void displayFixtures(const vector<Match>& fixtures) {
     }
 }
 
+// Function to write fixtures to a CSV file
+void writeFixturesToCSV(const vector<Match>& fixtures, const string& filename) {
+    ofstream file(filename);
+
+    if (!file.is_open()) {
+        cerr << "Error: Could not open file " << filename << endl;
+        return;
+    }
+
+    // Write the header line
+    file << "Weekend,Home Team,Away Team,Stadium,Town,Leg" << endl;
+
+    // Write the fixtures
+    for (const auto& match : fixtures) {
+        file << match.weekend << "," << match.homeTeam << "," << match.awayTeam << ","
+             << match.stadium << "," << match.town << "," << match.leg << endl;
+    }
+
+    file.close();
+}
+
 int main() {
     // Set the file path to your CSV file
-    string filename = "Teams.csv";
+    string filename = "C:/Users/elmer/Documents/GitHub/GroupProject/cmake-build-debug/CMakeFiles/cmake-build-debug/CMakeFiles/Teams.csv";
     // Get the teams from the CSV file
     vector<FootballTeam> teams = getTeamsFromCSV(filename);
 
