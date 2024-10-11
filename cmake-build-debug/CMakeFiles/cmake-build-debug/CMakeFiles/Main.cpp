@@ -54,5 +54,21 @@ vector<FootballTeam> getTeamsFromCSV(const string& filename) {
     }
 
     file.close();
-     return teams;
+    return teams;
 }
+
+// Function to generate fixtures
+vector<Match> generateFixtures(const vector<FootballTeam>& teams) {
+    vector<Match> fixtures;
+    int weekend = 1;
+
+    // Generate matches (home and away)
+    for (size_t i = 0; i < teams.size(); ++i) {
+        for (size_t j = i + 1; j < teams.size(); ++j) {
+            // Match 1: Team[i] plays at home
+            fixtures.push_back({teams[i].teamName, teams[j].teamName, teams[i].homeStadium, teams[i].localTown, 1, 0});
+
+            // Match 2: Team[j] plays at home
+            fixtures.push_back({teams[j].teamName, teams[i].teamName, teams[j].homeStadium, teams[j].localTown, 2, 0});
+        }
+    }
