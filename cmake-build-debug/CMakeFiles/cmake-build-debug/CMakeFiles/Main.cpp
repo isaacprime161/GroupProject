@@ -72,3 +72,20 @@ vector<Match> generateFixtures(const vector<FootballTeam>& teams) {
             fixtures.push_back({teams[j].teamName, teams[i].teamName, teams[j].homeStadium, teams[j].localTown, 2, 0});
         }
     }
+
+    // Sort fixtures such that same town teams play later (to enforce rule 1)
+    stable_sort(fixtures.begin(), fixtures.end(), [&teams](const Match& a, const Match& b) {
+        return a.town != b.town; // Non-same town matches come first
+    });
+
+    // Schedule matches 4 teams per weekend (2 matches)
+    for (size_t i = 0; i < fixtures.size(); i += 2) {
+        fixtures[i].weekend = weekend;
+        if (i + 1 < fixtures.size()) {
+            fixtures[i + 1].weekend = weekend;
+        }
+        weekend++;
+    }
+
+    return fixtures;
+}
