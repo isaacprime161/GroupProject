@@ -5,10 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-// For shuffling teams
 using namespace std;
 
-// Defines structure for team
 struct FootballTeam {
     string teamName;
     string localTown;
@@ -43,12 +41,9 @@ vector<FootballTeam> getTeamsFromCSV(const string& filename) {
     while (getline(file, line)) {
         stringstream ss(line);
         string teamName, localTown, homeStadium;
-
-        // Assuming the CSV format is: teamName,localTown,homeStadium
         getline(ss, teamName, ',');
         getline(ss, localTown, ',');
         getline(ss, homeStadium, ',');
-
         // Add the team to the list
         teams.push_back({teamName, localTown, homeStadium});
     }
@@ -57,28 +52,21 @@ vector<FootballTeam> getTeamsFromCSV(const string& filename) {
     return teams;
 }
 
-// Function to generate fixtures
 vector<Match> generateFixtures(const vector<FootballTeam>& teams) {
     vector<Match> fixtures;
     int weekend = 1;
 
-    // Generate matches (home and away)
     for (size_t i = 0; i < teams.size(); ++i) {
         for (size_t j = i + 1; j < teams.size(); ++j) {
-            // Match 1: Team[i] plays at home
             fixtures.push_back({teams[i].teamName, teams[j].teamName, teams[i].homeStadium, teams[i].localTown, 1, 0});
-
-            // Match 2: Team[j] plays at home
             fixtures.push_back({teams[j].teamName, teams[i].teamName, teams[j].homeStadium, teams[j].localTown, 2, 0});
         }
     }
 
-    // Sort fixtures such that same town teams play later (to enforce rule 1)
     stable_sort(fixtures.begin(), fixtures.end(), [&teams](const Match& a, const Match& b) {
-        return a.town != b.town; // Non-same town matches come first
+        return a.town != b.town;
     });
 
-    // Schedule matches 4 teams per weekend (2 matches)
     for (size_t i = 0; i < fixtures.size(); i += 2) {
         fixtures[i].weekend = weekend;
         if (i + 1 < fixtures.size()) {
@@ -90,7 +78,6 @@ vector<Match> generateFixtures(const vector<FootballTeam>& teams) {
     return fixtures;
 }
 
-// Function to display the fixtures
 void displayFixtures(const vector<Match>& fixtures) {
     for (const auto& match : fixtures) {
         cout << "Weekend #" << match.weekend << ": " << match.homeTeam << " vs " << match.awayTeam
@@ -99,7 +86,6 @@ void displayFixtures(const vector<Match>& fixtures) {
     }
 }
 
-// Function to write fixtures to a CSV file
 void writeFixturesToCSV(const vector<Match>& fixtures, const string& filename) {
     ofstream file(filename);
 
@@ -108,10 +94,8 @@ void writeFixturesToCSV(const vector<Match>& fixtures, const string& filename) {
         return;
     }
 
-    // Write the header line
     file << "Weekend,Home Team,Away Team,Stadium,Town,Leg" << endl;
 
-    // Write the fixtures
     for (const auto& match : fixtures) {
         file << match.weekend << "," << match.homeTeam << "," << match.awayTeam << ","
              << match.stadium << "," << match.town << "," << match.leg << endl;
@@ -121,9 +105,7 @@ void writeFixturesToCSV(const vector<Match>& fixtures, const string& filename) {
 }
 
 int main() {
-    // Set the file path to your CSV file
     string filename = "C:/Users/elmer/Documents/GitHub/GroupProject/cmake-build-debug/CMakeFiles/cmake-build-debug/CMakeFiles/Teams.csv";
-    // Get the teams from the CSV file
     vector<FootballTeam> teams = getTeamsFromCSV(filename);
 
     if (teams.empty()) {
@@ -131,19 +113,11 @@ int main() {
         return 1;
     }
 
-    // Generate fixtures
     vector<Match> fixtures = generateFixtures(teams);
-
-    // Display the fixtures
     displayFixtures(fixtures);
-
-    // Write the fixtures to a CSV file
     string fixturesFilename = "Fixtures.csv";
     writeFixturesToCSV(fixtures, fixturesFilename);
-
     cout << "Fixtures written to " << fixturesFilename << endl;
-
-
     return 0;
 
 }
