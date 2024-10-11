@@ -89,3 +89,40 @@ vector<Match> generateFixtures(const vector<FootballTeam>& teams) {
 
     return fixtures;
 }
+
+// Function to display the fixtures
+void displayFixtures(const vector<Match>& fixtures) {
+    for (const auto& match : fixtures) {
+        cout << "Weekend #" << match.weekend << ": " << match.homeTeam << " vs " << match.awayTeam
+             << " at " << match.stadium << " in " << match.town
+             << " (Leg " << match.leg << ")" << endl;
+    }
+}
+
+int main() {
+    // Set the file path to your CSV file
+    string filename = "Teams.csv";
+    // Get the teams from the CSV file
+    vector<FootballTeam> teams = getTeamsFromCSV(filename);
+
+    if (teams.empty()) {
+        cerr << "No teams loaded. Please check your CSV file." << endl;
+        return 1;
+    }
+
+    // Generate fixtures
+    vector<Match> fixtures = generateFixtures(teams);
+
+    // Display the fixtures
+    displayFixtures(fixtures);
+
+    // Write the fixtures to a CSV file
+    string fixturesFilename = "Fixtures.csv";
+    writeFixturesToCSV(fixtures, fixturesFilename);
+
+    cout << "Fixtures written to " << fixturesFilename << endl;
+
+
+    return 0;
+
+}
